@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Action Vision | AI Image Captioning</title>
+    <title>Action Vision | AI Image Annotation</title>
     <link rel="stylesheet" href="static/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,12 +20,12 @@
     <main class="container">
         <header>
             <h1 class="glitch" data-text="Action Vision">Action Vision</h1>
-            <p class="subtitle">Advanced CNN + LSTM Image Annotation</p>
+            <p class="subtitle">AI Action Recognition (Serverless Demo)</p>
         </header>
 
         <section class="upload-section card">
             <div class="sample-intro">
-                <p>Select a sample image below to see the AI Action Recognition in real-time.</p>
+                <p>Select a sample image to see AI Action Recognition in effect.</p>
             </div>
 
             <div class="sample-gallery">
@@ -38,14 +38,13 @@
                     <span class="sample-label">Nature</span>
                 </div>
                 <div class="sample-item" data-path="samples/sample1.jpg">
-                    <img src="samples/sample1.jpg" alt="Person">
-                    <span class="sample-label">Casual</span>
+                    <img src="samples/sample1.jpg" alt="Casual">
+                    <span class="sample-label">Person</span>
                 </div>
             </div>
 
             <div id="preview-container" class="preview-container hidden">
                 <img id="image-preview" src="" alt="Preview">
-                <button id="clear-btn" class="icon-btn">×</button>
             </div>
 
             <button id="predict-btn" class="primary-btn" disabled>
@@ -57,7 +56,7 @@
         <section id="result-section" class="result-section card hidden">
             <div class="action-header">
                 <h3>Detected Action</h3>
-                <div id="action-badge" class="action-badge">Searching...</div>
+                <div id="action-badge" class="action-badge">Analyzing...</div>
             </div>
             <div class="annotation-box">
                 <h4>Full AI Annotation</h4>
