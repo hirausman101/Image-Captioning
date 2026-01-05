@@ -6,37 +6,33 @@ const clearBtn = document.getElementById('clear-btn');
 const predictBtn = document.getElementById('predict-btn');
 const resultSection = document.getElementById('result-section');
 const captionText = document.getElementById('caption-text');
-const loader = document.querySelector('.loader');
-const btnText = document.querySelector('.btn-text');
+const sampleItems = document.querySelectorAll('.sample-item');
 
 let selectedFile = null;
+let selectedSamplePath = null;
 
-// Handle click to browse
-dropZone.addEventListener('click', () => imageInput.click());
+// --- CONFIGURATION ---
+// Set to your Hugging Face space URL for the live demo, e.g., 'https://user-space.hf.space'
+// Leave as '' to use the local Flask backend
+const API_URL = '';
+const IS_HF = API_URL.includes('hf.space');
 
-// Handle drag and drop
-dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('drag-over');
-});
+// Handle sample selection
+sampleItems.forEach(item => {
+    item.addEventListener('click', async () => {
+        // UI updates
+        sampleItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
 
-dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('drag-over');
-});
+        selectedSamplePath = item.getAttribute('data-path');
+        predictBtn.disabled = false;
+        resultSection.classList.add('hidden');
 
-dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) {
-        handleFile(e.dataTransfer.files[0]);
-    }
-});
-
-// Handle file selection
-imageInput.addEventListener('change', (e) => {
-    if (e.target.files.length) {
-        handleFile(e.target.files[0]);
-    }
+        // Fetch the sample image to create a file object (so backend doesn't change)
+        const response = await fetch(selectedSamplePath);
+        const blob = await response.blob();
+        selectedFile = new File([blob], selectedSamplePath.split('/').pop(), { type: blob.type });
+    });
 });
 
 function handleFile(file) {
@@ -44,7 +40,7 @@ function handleFile(file) {
         alert('Please upload an image file.');
         return;
     }
-    
+
     selectedFile = file;
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -77,17 +73,28 @@ predictBtn.addEventListener('click', async () => {
     formData.append('image', selectedFile);
 
     try {
-        const response = await fetch('/predict', {
-            method: 'POST',
-            body: formData
-        });
-        
-        const data = await response.json();
-        
-        if (data.error) {
-            alert(data.error);
+        let response;
+        if (IS_HF) {
+            // Handle Hugging Face (Gradio) API
+            const base64 = await toBase64(selectedFile);
+            response = await fetch(`${API_URL}/api/predict`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: [base64] })
+            });
+            const result = await response.json();
+            showResult(result.data[0], result.data[1]);
         } else {
-            showCaption(data.caption);
+            // Handle local Flask API
+            const formData = new FormData();
+            formData.append('image', selectedFile);
+            response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+            showResult(data.caption, data.action);
         }
     } catch (error) {
         console.error('Error:', error);
@@ -108,8 +115,20 @@ function setLoading(isLoading) {
     }
 }
 
-function showCaption(text) {
-    captionText.textContent = text;
+function showResult(caption, action) {
+    const actionBadge = document.getElementById('action-badge');
+    actionBadge.textContent = action;
+    captionText.textContent = caption;
     resultSection.classList.remove('hidden');
     resultSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Utility to convert file to base64 for Gradio
+function toBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
 }

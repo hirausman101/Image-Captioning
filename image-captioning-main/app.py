@@ -1,6 +1,6 @@
 import os
-# Redirect Keras cache to E: drive to avoid space issues on C:
-os.environ['KERAS_HOME'] = os.path.join('E:', '.keras_cache')
+# Cross-platform Keras cache handling
+os.environ['KERAS_HOME'] = os.path.join(os.getcwd(), '.keras_cache')
 
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
@@ -120,7 +120,34 @@ def predict():
     feature = vgg_model.predict(img_array, verbose=0)
     caption = predict_caption(caption_model, feature, tokenizer, MAX_LENGTH)
     
-    return jsonify({'caption': caption})
+    # Improved logic to extract action (primary verb)
+    words = caption.split()
+    action = "Unknown"
+    # 1. Look for 'ing' words (highest priority)
+    for word in words:
+        if word.lower().endswith('ing'):
+            action = word.capitalize()
+            break
+    
+    if action == "Unknown":
+        # 2. Skip common subjects/counts to find the verb
+        subjects = {'a', 'an', 'the', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 
+                    'people', 'person', 'man', 'woman', 'boy', 'girl', 'child', 'children', 'dog', 'cat', 'staged', 'player', 'athlete', 'someone'}
+        for word in words:
+            if word.lower() not in subjects and len(word) > 2:
+                action = word.capitalize()
+                break
+    
+    if action == "Unknown" and len(words) > 1:
+        # Fallback to the second word
+        action = words[1].capitalize()
+    
+    return jsonify({
+        'caption': caption,
+        'action': action
+    })
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Use the port assigned by Render, or default to 5000 for local development
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

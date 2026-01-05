@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Action Vision | AI Image Captioning</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="static/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="background-blobs">
         <div class="blob blob-1"></div>
@@ -22,14 +24,23 @@
         </header>
 
         <section class="upload-section card">
-            <div id="drop-zone" class="drop-zone">
-                <div class="drop-zone-content">
-                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
-                    </svg>
-                    <span>Drag & drop or <span class="browse-btn">browse</span></span>
+            <div class="sample-intro">
+                <p>Select a sample image below to see the AI Action Recognition in real-time.</p>
+            </div>
+
+            <div class="sample-gallery">
+                <div class="sample-item" data-path="samples/basketball_dunk.png">
+                    <img src="samples/basketball_dunk.png" alt="Basketball">
+                    <span class="sample-label">Sports</span>
                 </div>
-                <input type="file" id="image-input" accept="image/*" hidden>
+                <div class="sample-item" data-path="samples/running_dog.png">
+                    <img src="samples/running_dog.png" alt="Animals">
+                    <span class="sample-label">Nature</span>
+                </div>
+                <div class="sample-item" data-path="samples/sample1.jpg">
+                    <img src="samples/sample1.jpg" alt="Person">
+                    <span class="sample-label">Casual</span>
+                </div>
             </div>
 
             <div id="preview-container" class="preview-container hidden">
@@ -44,8 +55,12 @@
         </section>
 
         <section id="result-section" class="result-section card hidden">
-            <h3>AI Annotation</h3>
-            <div class="caption-box">
+            <div class="action-header">
+                <h3>Detected Action</h3>
+                <div id="action-badge" class="action-badge">Searching...</div>
+            </div>
+            <div class="annotation-box">
+                <h4>Full AI Annotation</h4>
                 <p id="caption-text"></p>
             </div>
         </section>
@@ -55,6 +70,7 @@
         </footer>
     </main>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="static/script.js"></script>
 </body>
+
 </html>

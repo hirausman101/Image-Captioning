@@ -215,6 +215,40 @@ h1 {
     }
 }
 
+.action-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-badge {
+    background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.annotation-box h4 {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+#caption-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: white;
+}
+
 .caption-box {
     margin-top: 1rem;
     padding: 1.5rem;
@@ -248,4 +282,66 @@ footer {
     margin-top: 3rem;
     color: #475569;
     font-size: 0.9rem;
+}
+
+/* Sample Gallery Styles */
+.sample-intro {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+}
+
+.sample-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.sample-item {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid transparent;
+}
+
+.sample-item:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.sample-item.active {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+.sample-item img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(30%);
+    transition: filter 0.3s ease;
+}
+
+.sample-item:hover img,
+.sample-item.active img {
+    filter: grayscale(0%);
+}
+
+.sample-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    color: white;
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    text-align: center;
+    font-weight: 600;
 }
